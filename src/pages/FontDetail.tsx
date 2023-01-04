@@ -6,6 +6,7 @@ import { Header } from '../components/Header';
 import { CustomButton } from '../components/CustomButton';
 import heroImg from '../media/hero_illustration.png';
 import TextField from '@mui/material/TextField';
+import { SendBuyCoin } from '../components/SendBuyCoin';
 
 interface User {
     id: number;
@@ -44,8 +45,14 @@ export const FontDetail = (props: Props) => {
         setFont(fontDemo);
     }, []);
     const [isEnterPrivateKey, setIsEnterPrivateKey] = React.useState(false);
-    const handelBuy = () => {
-        setIsEnterPrivateKey(!isEnterPrivateKey);
+    const [typeLicense, setTypeLicense] = React.useState('1');
+    const handelBuy = (type: string) => {
+        if (typeLicense === type) {
+            setIsEnterPrivateKey(!isEnterPrivateKey);
+        } else {
+            setIsEnterPrivateKey(true);
+        }
+        setTypeLicense(type);
     };
     const CustomContainer = styled(Container)(({ theme }) => ({
         display: 'flex',
@@ -173,25 +180,36 @@ export const FontDetail = (props: Props) => {
                             </Box>
 
                             <Button
-                                onClick={() => handelBuy()}
+                                onClick={() => handelBuy('0')}
                                 variant={'contained'}
-                                sx={{ mt: 4, backgroundColor: '#000339', color: '#fff', padding: '0.5rem 1rem' }}
+                                sx={{
+                                    mt: 4,
+                                    backgroundColor: '#000339',
+                                    color: '#fff',
+                                    padding: '0.5rem 1rem',
+                                    mr: 2,
+                                    minWidth: 'calc(100% / 2 - 1rem)',
+                                }}
                             >
                                 Buy Font
+                            </Button>
+                            <Button
+                                onClick={() => handelBuy('1')}
+                                variant={'contained'}
+                                sx={{
+                                    mt: 4,
+                                    backgroundColor: '#000339',
+                                    color: '#fff',
+                                    padding: '0.5rem 1rem',
+                                    minWidth: 'calc(100% / 2 - 1rem)',
+                                }}
+                            >
+                                Buy Font License
                             </Button>
                         </Box>
                     </CustomBox>
                 </Card>
-                {isEnterPrivateKey && (
-                    <Card sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
-                        <TextField label="Private Key" variant="outlined" />
-                        <Box sx={{ display: 'flex' }}>
-                            <Button variant={'contained'} sx={{ mt: 4, backgroundColor: '#000339', color: '#fff' }}>
-                                Send
-                            </Button>
-                        </Box>
-                    </Card>
-                )}
+                {isEnterPrivateKey && <SendBuyCoin type={typeLicense} />}
             </CustomContainer>
         </Box>
     );

@@ -2,11 +2,12 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { Box, Container, styled, Typography } from '@mui/material';
+import { Box, Card, Container, styled, Typography } from '@mui/material';
 import { Header } from '../components/Header';
+
 type Props = {};
-console.log(import.meta.env.VITE_BACKEND_URL);
-export const Login = (props: Props) => {
+export const ConnectAccessToken = (props: Props) => {
+    const [accessToken, setAccessToken] = React.useState(' sdsd');
     const CustomContainer = styled(Container)(({ theme }) => ({
         display: 'flex',
         flexDirection: 'column',
@@ -36,9 +37,10 @@ export const Login = (props: Props) => {
             color: '#fff',
         },
     }));
+    const handleChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setAccessToken(e.target.value);
+    };
 
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
     return (
         <Box
             sx={{
@@ -50,25 +52,18 @@ export const Login = (props: Props) => {
                 padding: '0 5rem',
             }}
         >
-            <Header title={'Login'} />
+            <Header title={'Connect Access Token'} />
             <TextField
-                fullWidth
-                id="outlined-basic"
-                label="Email"
+                label="Access Token"
                 variant="outlined"
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setAccessToken(e.target.value)}
+                value={accessToken}
             />
-            <TextField
-                fullWidth
-                id="outlined-basic"
-                label="Password"
-                variant="outlined"
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-            />
-            <CustomButton fullWidth variant="contained">
-                Login
-            </CustomButton>
+            <Box sx={{ display: 'flex' }}>
+                <Button variant={'contained'} sx={{ backgroundColor: '#000339', color: '#fff' }}>
+                    Send
+                </Button>
+            </Box>
         </Box>
     );
 };
