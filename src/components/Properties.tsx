@@ -27,26 +27,27 @@ export const Properties: FunctionComponent<Props> = (props) => {
             <Container>
                 <PropertiesTextBox>
                     <Typography sx={{ color: '#000339', fontSize: '35px', fontWeight: 'bold' }}>
-                        Featured Properties
+                        Font Library
                     </Typography>
                     <Typography sx={{ color: '#5A6473', fontSize: '16px', mt: 1 }}>
-                        Everything you need to know when looking for a new home!
+                        We have a large collection of fonts for you to choose from
                     </Typography>
                 </PropertiesTextBox>
 
                 <PropertiesGrid container spacing={5} columns={{ xs: 4, sm: 8, md: 12 }}>
-                    {Array.from({ length: 4 }, () => (
-                        <Grid>
+                    {Array.from({ length: 21 }).map((_, index) => (
+                        <Grid key={Math.random()}>
                             <Font
-                                key={Math.random()}
+                                id={index}
                                 img={'https://picsum.photos/400/300'}
-                                name={'Font Name'}
+                                name={'NVN Sans'}
                                 price={'100'}
                                 priceLicense={'200'}
                                 user={{
                                     name: 'John Doe',
                                     email: 'nam@name.com',
                                 }}
+                                isBuy={Math.random() > 0.5}
                             />
                         </Grid>
                     ))}

@@ -19,6 +19,7 @@ import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import HomeIcon from '@mui/icons-material/Home';
 import ContactsIcon from '@mui/icons-material/Contacts';
+import { Link } from 'react-router-dom';
 interface OwnProps {}
 
 type Props = OwnProps;
@@ -28,41 +29,6 @@ export const Navbar: FunctionComponent<Props> = (props) => {
         left: false,
     });
 
-    const toggleDrawer = (anchor: string, open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
-        if (
-            event.type === 'keydown' &&
-            ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')
-        ) {
-            return;
-        }
-        setMobileMenu({ ...mobileMenu, [anchor]: open });
-    };
-
-    const list = (anchor: string) => (
-        <Box
-            sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
-            role="presentation"
-            onClick={toggleDrawer(anchor, false)}
-            onKeyDown={toggleDrawer(anchor, false)}
-        >
-            <List>
-                {['Home', 'Features', 'Services', 'Listed', 'Contact'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index === 0 && <HomeIcon />}
-                                {index === 1 && <FeaturedPlayListIcon />}
-                                {index === 2 && <MiscellaneousServicesIcon />}
-                                {index === 3 && <ListAltIcon />}
-                                {index === 4 && <ContactsIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-        </Box>
-    );
     const NavLink = styled(Typography)(({ theme }) => ({
         fontSize: '14px',
         color: '#4F5361',
@@ -77,7 +43,7 @@ export const Navbar: FunctionComponent<Props> = (props) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: theme.spacing(3),
+        gap: theme.spacing(5),
         [theme.breakpoints.down('md')]: {
             display: 'none',
         },
@@ -92,11 +58,13 @@ export const Navbar: FunctionComponent<Props> = (props) => {
         },
     }));
 
-    const NavbarContainer = styled(Container)(({ theme }) => ({
+    const NavbarContainer = styled(Box)(({ theme }) => ({
         display: 'flex',
+        zIndex: 1,
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: theme.spacing(5),
+        backgroundColor: '#fff',
+        padding: theme.spacing(2, 4),
         [theme.breakpoints.down('md')]: {
             padding: theme.spacing(2),
         },
@@ -110,20 +78,29 @@ export const Navbar: FunctionComponent<Props> = (props) => {
     }));
 
     return (
-        <NavbarContainer>
+        <NavbarContainer
+            sx={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: '#fff',
+                zIndex: 1000,
+                width: '100%',
+            }}
+        >
             <Box display="flex" alignItems="center" justifyContent="center" gap={'2.5rem'}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <CustomMenuIcon onClick={toggleDrawer('left', true)} />
-                    <Drawer anchor="left" open={mobileMenu['left']} onClose={toggleDrawer('left', false)}>
-                        {list('left')}
-                    </Drawer>
+                    <CustomMenuIcon onClick={() => setMobileMenu({ left: true })} />
                     <Typography variant="h6" fontWeight="bold" color="#4F5361">
                         HaiNamCoin
                     </Typography>
                 </Box>
 
                 <NavbarLinksBox>
-                    <NavLink variant={'body2'}>Home</NavLink>
+                    <Link to={'/'}>
+                        <NavLink>Home</NavLink>
+                    </Link>
                     <NavLink variant={'body2'}>Features</NavLink>
                     <NavLink variant={'body2'}>Services</NavLink>
                     <NavLink variant={'body2'}>Listed </NavLink>
@@ -131,10 +108,14 @@ export const Navbar: FunctionComponent<Props> = (props) => {
                 </NavbarLinksBox>
             </Box>
             <Box display="flex" alignItems="center" justifyContent="center" gap={'1rem'}>
-                <NavLink variant={'body2'}>Login</NavLink>
-                <NavLink variant={'body2'}>
-                    <CustomButton backgroundColor={'#0F1B4C'} color={'#fff'} buttonText={'Register'} />
-                </NavLink>
+                <Link to={'/login'}>
+                    <NavLink variant={'body2'}>Login</NavLink>
+                </Link>
+                <Link to={'/register'}>
+                    <NavLink variant={'body2'}>
+                        <CustomButton backgroundColor={'#0F1B4C'} color={'#fff'} buttonText={'Register'} />
+                    </NavLink>
+                </Link>
             </Box>
         </NavbarContainer>
     );

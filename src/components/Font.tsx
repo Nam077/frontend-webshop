@@ -1,21 +1,26 @@
 import React, { FunctionComponent } from 'react';
 import { Box, styled, Typography } from '@mui/material';
+import { CustomButton } from './CustomButton';
+import { useNavigate } from 'react-router-dom';
 
 interface User {
     name: string;
     email: string;
 }
 interface OwnProps {
+    id: number;
     name: string;
     price: string;
     img: string;
     priceLicense: string;
     user: User;
+    isBuy?: boolean;
 }
 
 type Props = OwnProps;
 
 export const Font: FunctionComponent<Props> = (props) => {
+    const navigate = useNavigate();
     const FontBox = styled(Box)(({ theme }) => ({
         borderTopLeftRadius: '10px',
         borderTopRightRadius: '10px',
@@ -36,6 +41,10 @@ export const Font: FunctionComponent<Props> = (props) => {
     const ImgContainer = styled(Box)(() => ({
         width: '100%',
     }));
+    const toDetail = (id: string) => {
+        console.log(id);
+        navigate(`/font/${id}`);
+    };
     return (
         <FontBox>
             <ImgContainer>
@@ -44,32 +53,50 @@ export const Font: FunctionComponent<Props> = (props) => {
 
             <Box sx={{ padding: '1rem' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography variant="body2" sx={{ fontWeight: '700' }}>
-                        {props.name}
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontWeight: '700' }}>
-                        ${props.price}
-                    </Typography>
-                </Box>
-
-                <Box
-                    sx={{
-                        display: 'flex',
-                    }}
-                >
-                    <InfoBox>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            backgroundColor: '#F5F5F5',
+                            padding: '0.5rem',
+                            borderRadius: '10px',
+                            minWidth: '200px',
+                        }}
+                    >
+                        <Typography
+                            onClick={() => toDetail(props.id.toString())}
+                            variant="body2"
+                            sx={{ fontWeight: '700' }}
+                        >
+                            {props.name}
+                        </Typography>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                         <Typography variant="body2" sx={{ fontWeight: '700' }}>
                             {props.user.name}
                         </Typography>
-                        <Typography variant="body2" sx={{ fontWeight: '700' }}>
-                            {props.user.email}
-                        </Typography>
-                    </InfoBox>
-                    <InfoBox>
-                        <Typography variant="body2" sx={{ fontWeight: '700' }}>
-                            {props.priceLicense}
-                        </Typography>
-                    </InfoBox>
+                    </Box>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                    <Typography variant="body2" sx={{ fontWeight: '700', color: '#000' }}>
+                        Price: ${props.price}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: '700', color: '#000' }}>
+                        Price License: ${props.priceLicense}
+                    </Typography>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                    {props.isBuy ? (
+                        <CustomButton backgroundColor={'#000'} color={'#fff'} buttonText={'Download'}></CustomButton>
+                    ) : (
+                        <Box
+                            onClick={() => {
+                                toDetail(props.id.toString());
+                            }}
+                        >
+                            <CustomButton backgroundColor={'#000'} color={'#fff'} buttonText={'Buy Now'}></CustomButton>
+                        </Box>
+                    )}
                 </Box>
             </Box>
         </FontBox>

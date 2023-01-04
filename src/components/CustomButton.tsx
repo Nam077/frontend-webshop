@@ -39,5 +39,5 @@ export const CustomButton: FunctionComponent<Props> = (props) => {
         },
     }));
 
-    return <CustomButton>{props.buttonText}</CustomButton>;
+    return <CustomButton onClick={() => props.onClick}>{props.buttonText}</CustomButton>;
 };

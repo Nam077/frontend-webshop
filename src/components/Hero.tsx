@@ -33,7 +33,6 @@ export const Hero: FunctionComponent<Props> = (props) => {
     return (
         <Box sx={{ backgroundColor: '#E6F0FF', minHeight: '80vh' }}>
             <Container>
-                <Navbar />
                 <CustomBox>
                     <Box sx={{ flex: '1' }}>
                         <Typography
