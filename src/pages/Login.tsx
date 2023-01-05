@@ -2,11 +2,18 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { Box, Container, styled, Typography } from '@mui/material';
+import { Box, CircularProgress, Container, styled, Typography } from '@mui/material';
 import { Header } from '../components/Header';
+import { useStateContext } from '../ConTextProvider';
+import { ApiService } from '../services/ApiService';
+import { useCookies } from 'react-cookie';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 type Props = {};
 console.log(import.meta.env.VITE_BACKEND_URL);
 export const Login = (props: Props) => {
+    const { user, setUser, setIsLogin } = useStateContext();
+
     const CustomContainer = styled(Container)(({ theme }) => ({
         display: 'flex',
         flexDirection: 'column',
@@ -36,9 +43,31 @@ export const Login = (props: Props) => {
             color: '#fff',
         },
     }));
-
-    const [email, setEmail] = React.useState('');
+    const navigate = useNavigate();
+    const [username, setUsername] = React.useState('');
+    const [loading, setLoading] = React.useState(false);
     const [password, setPassword] = React.useState('');
+    const [accessToken, setAccessToken] = useCookies(['accessToken']);
+    const handelSubmit = async () => {
+        setLoading(true);
+        try {
+            const res = await new ApiService().login(username, password);
+            setAccessToken('accessToken', res.accessToken, { path: '/' });
+            toast.success('Login success');
+            console.log(accessToken);
+            const userDetail = await new ApiService().getCurrentUser(accessToken.accessToken);
+            if (userDetail) {
+                setUser(userDetail);
+                setIsLogin(true);
+                navigate('/');
+            }
+            navigate('/');
+        } catch (e: any) {
+            toast.error(e.response.data.message);
+        } finally {
+            setLoading(false);
+        }
+    };
     return (
         <Box
             sx={{
@@ -50,13 +79,15 @@ export const Login = (props: Props) => {
                 padding: '0 5rem',
             }}
         >
+            {loading ? <CircularProgress /> : null}
             <Header title={'Login'} />
             <TextField
                 fullWidth
                 id="outlined-basic"
-                label="Email"
+                label="Username "
                 variant="outlined"
-                onChange={(e) => setEmail(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
             />
             <TextField
                 fullWidth
@@ -66,7 +97,7 @@ export const Login = (props: Props) => {
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
             />
-            <CustomButton fullWidth variant="contained">
+            <CustomButton onClick={handelSubmit} fullWidth variant="contained">
                 Login
             </CustomButton>
         </Box>

@@ -20,11 +20,13 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import HomeIcon from '@mui/icons-material/Home';
 import ContactsIcon from '@mui/icons-material/Contacts';
 import { Link } from 'react-router-dom';
+import { useStateContext } from '../ConTextProvider';
 interface OwnProps {}
 
 type Props = OwnProps;
 
 export const Navbar: FunctionComponent<Props> = (props) => {
+    const { isLogin, user } = useStateContext();
     const [mobileMenu, setMobileMenu] = useState({
         left: false,
     });
@@ -107,16 +109,28 @@ export const Navbar: FunctionComponent<Props> = (props) => {
                     <NavLink variant={'body2'}>Contact</NavLink>
                 </NavbarLinksBox>
             </Box>
-            <Box display="flex" alignItems="center" justifyContent="center" gap={'1rem'}>
-                <Link to={'/login'}>
-                    <NavLink variant={'body2'}>Login</NavLink>
-                </Link>
-                <Link to={'/register'}>
-                    <NavLink variant={'body2'}>
-                        <CustomButton backgroundColor={'#0F1B4C'} color={'#fff'} buttonText={'Register'} />
-                    </NavLink>
-                </Link>
-            </Box>
+            {!isLogin ? (
+                <Box display="flex" alignItems="center" justifyContent="center" gap={'1rem'}>
+                    <Link to={'/login'}>
+                        <NavLink variant={'body2'}>Login</NavLink>
+                    </Link>
+                    <Link to={'/register'}>
+                        <NavLink variant={'body2'}>
+                            <CustomButton backgroundColor={'#0F1B4C'} color={'#fff'} buttonText={'Register'} />
+                        </NavLink>
+                    </Link>
+                </Box>
+            ) : (
+                <Box display="flex" alignItems="center" justifyContent="center" gap={'1rem'}>
+                    <NavLink variant={'body2'}>{user.name}</NavLink>
+                    <Link to={'/connect-wallet'}>
+                        <NavLink variant={'body2'}> Connect Wallet</NavLink>
+                    </Link>
+                    <Link to={'/logout'}>
+                        <NavLink variant={'body2'}> Logout</NavLink>
+                    </Link>
+                </Box>
+            )}
         </NavbarContainer>
     );
 };

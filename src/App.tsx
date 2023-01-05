@@ -10,6 +10,7 @@ import { Register } from './pages/Register';
 import { Navbar } from './components/Navbar';
 import { FontDetail } from './pages/FontDetail';
 import { ConnectAccessToken } from './pages/ConnectAccessToken';
+import { Logout } from './pages/Logout';
 function App() {
     return (
         <>
@@ -17,6 +18,7 @@ function App() {
                 <Navbar />
                 <Routes>
                     <Route path="/login" element={<Login />} />
+                    <Route path="/logout" element={<Logout />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/font/:id" element={<FontDetail />} />
                     <Route path="/connect-wallet" element={<ConnectAccessToken />} />

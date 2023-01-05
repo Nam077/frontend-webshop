@@ -7,18 +7,21 @@ import { CustomButton } from '../components/CustomButton';
 import heroImg from '../media/hero_illustration.png';
 import TextField from '@mui/material/TextField';
 import { SendBuyCoin } from '../components/SendBuyCoin';
+import { ApiService } from '../services/ApiService';
+import { useCookies } from 'react-cookie';
+import { Auth } from '../components/Auth';
 
 interface User {
-    id: number;
+    id: string;
     name: string;
     email: string;
 }
-interface Font {
-    id: number;
+export interface FontT {
+    id: string;
     name: string;
     price: string;
     img: string;
-    priceLicense: string;
+    price_license: string;
     user: User;
     totalBuy: number;
 }
@@ -26,23 +29,28 @@ interface Font {
 type Props = {};
 
 export const FontDetail = (props: Props) => {
-    const fontDemo: Font = {
-        id: 1,
-        name: 'NVN Sans',
-        price: '100',
-        img: 'https://picsum.photos/400/300',
-        priceLicense: '200',
-        user: {
-            id: 1,
-            name: 'John Doe',
-            email: 'nam@nam.com',
-        },
-        totalBuy: 100,
-    };
     const { id } = useParams();
-    const [font, setFont] = React.useState<Font | null>(null);
+    const [font, setFont] = React.useState<FontT>({
+        id: '',
+        name: '',
+        price: '',
+        img: '',
+        price_license: '',
+        user: {
+            id: '',
+            name: '',
+            email: '',
+        },
+        totalBuy: 0,
+    });
+
+    const [accessToken, setAccessToken] = useCookies(['accessToken']);
     React.useEffect(() => {
-        setFont(fontDemo);
+        if (id) {
+            new ApiService().getFontById(accessToken.accessToken, id).then((res) => {
+                setFont(res);
+            });
+        }
     }, []);
     const [isEnterPrivateKey, setIsEnterPrivateKey] = React.useState(false);
     const [typeLicense, setTypeLicense] = React.useState('1');
@@ -87,13 +95,13 @@ export const FontDetail = (props: Props) => {
     return (
         <Box sx={{ py: 10 }}>
             <Header title={`Font ${font?.name}`} />
-
+            <Auth />
             <CustomContainer>
                 <Card sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2, width: '100%', padding: '20px' }}>
                     <CustomBox>
                         <Box sx={{ flex: '1' }}>
                             <img
-                                src={font?.img}
+                                src={'https://picsum.photos/400/300'}
                                 alt="heroImg"
                                 style={{ maxWidth: '80%', marginBottom: '2rem', borderRadius: '10px' }}
                             />
@@ -161,7 +169,7 @@ export const FontDetail = (props: Props) => {
                                         minWidth: 'calc(100% / 3 - 1rem)',
                                     }}
                                 >
-                                    Price License: {font?.priceLicense} HNC
+                                    Price License: {font?.price_license} HNC
                                 </Typography>
                                 <Typography
                                     variant={'h6'}
@@ -180,7 +188,7 @@ export const FontDetail = (props: Props) => {
                             </Box>
 
                             <Button
-                                onClick={() => handelBuy('0')}
+                                onClick={() => handelBuy('1')}
                                 variant={'contained'}
                                 sx={{
                                     mt: 4,
@@ -194,7 +202,7 @@ export const FontDetail = (props: Props) => {
                                 Buy Font
                             </Button>
                             <Button
-                                onClick={() => handelBuy('1')}
+                                onClick={() => handelBuy('2')}
                                 variant={'contained'}
                                 sx={{
                                     mt: 4,
@@ -209,7 +217,8 @@ export const FontDetail = (props: Props) => {
                         </Box>
                     </CustomBox>
                 </Card>
-                {isEnterPrivateKey && <SendBuyCoin type={typeLicense} />}
+
+                {isEnterPrivateKey && <SendBuyCoin font={font} type={typeLicense} />}
             </CustomContainer>
         </Box>
     );

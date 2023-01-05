@@ -1,11 +1,44 @@
 import React, { FunctionComponent } from 'react';
 import { Box, Container, Grid, styled, Typography } from '@mui/material';
 import { Font } from './Font';
+import { ApiService } from '../services/ApiService';
+import { useStateContext } from '../ConTextProvider';
+import { useCookies } from 'react-cookie';
 interface OwnProps {}
 
 type Props = OwnProps;
 
+export interface FontI {
+    id: number;
+    name: string;
+    path_image: string;
+    link_download: string;
+    price: number;
+    price_license: number;
+    createdAt: string;
+    updatedAt: string;
+    user: {
+        id: number;
+        name: string;
+        email: string;
+        username: string;
+        password: string;
+        hainamcoin_id: number;
+        access_token: string;
+    };
+    options: {
+        value: number;
+        description: string;
+    };
+    value: number;
+    description: string;
+}
 export const Properties: FunctionComponent<Props> = (props) => {
+    const checkBuy = (font: FontI) => {
+        return font.options.value === 1;
+    };
+    const { isLogin } = useStateContext();
+    const [accessToken, setAccessToken] = useCookies(['accessToken']);
     const PropertiesGrid = styled(Grid)(({ theme }) => ({
         display: 'flex',
         justifyContent: 'space-between',
@@ -22,6 +55,20 @@ export const Properties: FunctionComponent<Props> = (props) => {
         },
     }));
 
+    const [fonts, setFonts] = React.useState<FontI[]>([]);
+    React.useEffect(() => {
+        if (isLogin) {
+            new ApiService().getAllFonts(accessToken.accessToken).then((res) => {
+                setFonts(res);
+                console.log(res);
+            });
+        } else {
+            new ApiService().getAllFontsWithOutLogin().then((res) => {
+                setFonts(res);
+                console.log(res);
+            });
+        }
+    }, [isLogin]);
     return (
         <Box sx={{ mt: 5, backgroundColor: '#F5FAFE', py: 10 }}>
             <Container>
@@ -35,19 +82,16 @@ export const Properties: FunctionComponent<Props> = (props) => {
                 </PropertiesTextBox>
 
                 <PropertiesGrid container spacing={5} columns={{ xs: 4, sm: 8, md: 12 }}>
-                    {Array.from({ length: 21 }).map((_, index) => (
-                        <Grid key={Math.random()}>
+                    {fonts.map((font) => (
+                        <Grid key={Math.random()} item xs={4} sm={4} md={3} sx={{ minWidth: '400px' }}>
                             <Font
-                                id={index}
-                                img={'https://picsum.photos/400/300'}
-                                name={'NVN Sans'}
-                                price={'100'}
-                                priceLicense={'200'}
-                                user={{
-                                    name: 'John Doe',
-                                    email: 'nam@name.com',
-                                }}
-                                isBuy={Math.random() > 0.5}
+                                id={font.id}
+                                img={'https://picsum.photos/500/300'}
+                                name={font.name}
+                                price={font.price_license + ''}
+                                priceLicense={font.price_license + ''}
+                                user={font.user}
+                                isBuy={checkBuy(font)}
                             />
                         </Grid>
                     ))}
