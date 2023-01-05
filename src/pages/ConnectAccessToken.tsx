@@ -44,7 +44,9 @@ export const ConnectAccessToken = (props: Props) => {
 
     const handelSubmit = async () => {
         try {
-            const data = await new ApiService().connectWallet(accessToken.accessToken, { access_token: accessToken });
+            const data = await new ApiService().connectWallet(accessToken.accessToken, {
+                access_token: accessTokenSend,
+            });
 
             toast.success('Connect success');
         } catch (e) {

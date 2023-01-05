@@ -96,7 +96,7 @@ export class ApiService {
                 type: +data.type,
             },
         };
-        console.log('createSmartContract');
+        console.log(config);
         const response = await axios(config);
         try {
             return response.data;
